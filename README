@@ -1,15 +1,21 @@
 PrimeSense Sensor Module for OpenNI version 1.5.7 and Kinect Driver
 ---------------------------------------------------------------------
 
-# build OpenNI
+# Step.1 build OpenNI
 wget http://dl.google.com/android/ndk/android-ndk-r8e-darwin-x86_64.tar.bz2
 tar -jxvf android-ndk-r8e-darwin-x86_64.tar.bz2
 cd android-ndk-r8e/sources
 git clone https://github.com/OpenNI/OpenNI.git
+# may be modify XnModuleLoader.cpp, LinuxProcesses.cpp, XnOpenNI.cpp
 cd OpenNI/Platform/Android/jni
 ndk-build
+cd ../libs/armeabi-v7a/
+# then you will find following shard library. 
+NiSkeletonBenchmark	libOpenNI.jni.so	libnimCodecs.so		libnimRecorder.so	niLicense
+Sample-SimpleRead	libOpenNI.so		libnimMockNodes.so	libusb.so		niReg
 
-# build SensorKinect
+
+# Step2. build SensorKinect
 # set NDK_MODULE_PATH to android-ndk-r8e/sources/OpenNI/Platform/Android/jni
 export NDK_MODULE_PATH=$PWD
 cd $HOME
@@ -21,3 +27,32 @@ ndk-build
 # SensorKinect/Platform/Android/libs/armeabi-v7a/
 libOpenNI.so		libXnDDK.so		libXnDeviceSensorV2.so	libusb.so
 libXnCore.so		libXnDeviceFile.so	libXnFormats.so
+
+
+# Step3. setup einvironment.
+adb push libOpenNI.so /system/lib
+adb push libOpenNI.jni.so /system/lib
+adb push libXnCore.so /system/lib
+adb push libXnDDK.so /system/lib
+adb push libXnDeviceFile.so /system/lib
+adb push libXnDeviceSensorV2.so /system/lib
+adb push libXnFormats.so /system/lib
+adb push libusb.so /system/lib
+adb push libnimCodecs.so /system/lib
+adb push libnimRecorder.so /system/lib
+adb push libnimMockNodes.so /system/lib
+
+cat <<EOF > modules.xml
+<Modules>
+<Module path=”/system/lib/libnimMockNodes.so” />
+<Module path=”/system/lib/libnimCodecs.so” />
+<Module path=”/system/lib/libnimRecorder.so” />
+<Module path=”/system/lib/libXnDeviceSensorV2.so” configDir=”/data/ni/” />
+<Module path=”/system/lib/libXnDeviceFile.so” configDir=”/data/ni/” />
+</Modules>
+EOF
+
+adb push modules.xml /data/ni/
+adb push GlobalDefaultsKinect.ini /data/ni/
+adb push SampleConfig.xml /data/ni/
+
