@@ -52,6 +52,7 @@ public:
 	XnBool IsCapabilitySupported(const XnChar* strCapabilityName);
 
 	const void* GetData() { return XnSensorMapGenerator::GetData(); }
+        XnUInt32 GetBytesPerPixel() { return sizeof(XnDepthPixel); }
 	XnDepthPixel* GetDepthMap();
 	XnDepthPixel GetDeviceMaxDepth();
 	void GetFieldOfView(XnFieldOfView& FOV);
@@ -68,10 +69,11 @@ public:
 	xn::ModuleAlternativeViewPointInterface* GetAlternativeViewPointInterface() { return this; }
 	XnBool IsViewPointSupported(xn::ProductionNode& OtherNode);
 	XnStatus SetViewPoint(xn::ProductionNode& OtherNode);
-	XnStatus ResetViewPoint();
 	XnBool IsViewPointAs(xn::ProductionNode& OtherNode);
+	XnStatus ResetViewPoint();
 	XnStatus RegisterToViewPointChange(XnModuleStateChangedHandler handler, void* pCookie, XnCallbackHandle& hCallback);
 	void UnregisterFromViewPointChange(XnCallbackHandle hCallback);
+        XnStatus GetPixelCoordinatesInViewPoint(xn::ProductionNode& other, XnUInt32 x, XnUInt32 y, XnUInt32& altX, XnUInt32& altY) { return 0;};
 
 	xn::ModuleFrameSyncInterface* GetFrameSyncInterface() { return this; }
 	XnBool CanFrameSyncWith(xn::ProductionNode& OtherNode);
