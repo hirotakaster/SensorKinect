@@ -4,7 +4,9 @@ PrimeSense Sensor Module for OpenNI version 1.5.7 and Kinect Driver
 # Step.1 build OpenNI
 wget http://dl.google.com/android/ndk/android-ndk-r8e-darwin-x86_64.tar.bz2
 tar -jxvf android-ndk-r8e-darwin-x86_64.tar.bz2
-cd android-ndk-r8e/sources
+cd android-ndk-r8e
+export PATH=$PATH:$PWD
+cd sources
 git clone https://github.com/OpenNI/OpenNI.git
 # may be modify XnModuleLoader.cpp, LinuxProcesses.cpp, XnOpenNI.cpp
 cd OpenNI/Platform/Android/jni
