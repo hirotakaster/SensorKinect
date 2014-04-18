@@ -7,8 +7,7 @@ tar -jxvf android-ndk-r8e-darwin-x86_64.tar.bz2
 cd android-ndk-r8e
 export PATH=$PATH:$PWD
 cd sources
-git clone https://github.com/OpenNI/OpenNI.git
-# may be modify XnModuleLoader.cpp, LinuxProcesses.cpp, XnOpenNI.cpp
+git clone https://github.com/hirotakaster/OpenNI.git
 cd OpenNI/Platform/Android/jni
 ndk-build
 cd ../libs/armeabi-v7a/
@@ -32,6 +31,7 @@ libXnCore.so		libXnDeviceFile.so	libXnFormats.so
 
 
 # Step3. setup einvironment.
+# copy all shared library to Android.
 adb push libOpenNI.so /system/lib
 adb push libOpenNI.jni.so /system/lib
 adb push libXnCore.so /system/lib
@@ -46,15 +46,16 @@ adb push libnimMockNodes.so /system/lib
 
 cat <<EOF > modules.xml
 <Modules>
-<Module path=”/system/lib/libnimMockNodes.so” />
-<Module path=”/system/lib/libnimCodecs.so” />
-<Module path=”/system/lib/libnimRecorder.so” />
-<Module path=”/system/lib/libXnDeviceSensorV2.so” configDir=”/data/ni/” />
-<Module path=”/system/lib/libXnDeviceFile.so” configDir=”/data/ni/” />
+    <Module path=”/system/lib/libnimMockNodes.so” />
+    <Module path=”/system/lib/libnimCodecs.so” />
+    <Module path=”/system/lib/libnimRecorder.so” />
+    <Module path=”/system/lib/libXnDeviceSensorV2.so” configDir=”/data/ni/” />
+    <Module path=”/system/lib/libXnDeviceFile.so” configDir=”/data/ni/” />
 </Modules>
 EOF
 
-adb push modules.xml /data/ni/
-adb push GlobalDefaultsKinect.ini /data/ni/
-adb push SampleConfig.xml /data/ni/
+adb shell "mkdir /system/ni/"
+adb push modules.xml /system/ni/
+adb push GlobalDefaultsKinect.ini /system/ni/
+adb push SampleConfig.xml /system/ni/
 
